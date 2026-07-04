@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ModuleType {
+  CONTROL
+  SUBORDINATE
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(150)
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  modules     Module[]
+}
+
+model Module {
+  id              Int          @id @default(autoincrement())
+  projectId       Int
+  project         Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name            String       @db.VarChar(150)
+  type            ModuleType
+  description     String?      @db.Text
+  posX            Float        @default(0)
+  posY            Float        @default(0)
+  connectionsFrom Connection[] @relation("FromModule")
+  connectionsTo   Connection[] @relation("ToModule")
+
+  @@index([projectId])
+}
+
+model Connection {
+  id           Int    @id @default(autoincrement())
+  fromModuleId Int
+  toModuleId   Int
+  fromModule   Module @relation("FromModule", fields: [fromModuleId], references: [id], onDelete: Cascade)
+  toModule     Module @relation("ToModule", fields: [toModuleId], references: [id], onDelete: Cascade)
+  relationType String @default("CALL") @db.VarChar(50)
+
+  @@index([fromModuleId])
+  @@index([toModuleId])
+}

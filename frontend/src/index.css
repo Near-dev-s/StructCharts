@@ -1,0 +1,127 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.error {
+  color: #e03131;
+}
+
+.new-project-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.project-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.project-list .description {
+  color: #666;
+  flex: 1;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+button.danger {
+  color: #e03131;
+  border-color: #e03131;
+}
+
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.editor-body {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel {
+  width: 340px;
+  padding: 16px;
+  border-left: 1px solid #eee;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.panel input,
+.panel select,
+.panel textarea {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+}
