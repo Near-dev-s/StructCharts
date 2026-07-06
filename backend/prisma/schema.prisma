@@ -12,6 +12,12 @@ enum ModuleType {
   SUBORDINATE
 }
 
+enum DataNature {
+  ELEMENTARY
+  STRUCTURE
+  CONTROL_FLAG
+}
+
 model Project {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(150)
@@ -37,13 +43,25 @@ model Module {
 }
 
 model Connection {
-  id           Int    @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   fromModuleId Int
   toModuleId   Int
-  fromModule   Module @relation("FromModule", fields: [fromModuleId], references: [id], onDelete: Cascade)
-  toModule     Module @relation("ToModule", fields: [toModuleId], references: [id], onDelete: Cascade)
-  relationType String @default("CALL") @db.VarChar(50)
+  fromModule   Module     @relation("FromModule", fields: [fromModuleId], references: [id], onDelete: Cascade)
+  toModule     Module     @relation("ToModule", fields: [toModuleId], references: [id], onDelete: Cascade)
+  relationType String     @default("CALL") @db.VarChar(50)
+  dataItems    DataItem[]
 
   @@index([fromModuleId])
   @@index([toModuleId])
+}
+
+model DataItem {
+  id           Int        @id @default(autoincrement())
+  connectionId Int
+  connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  name         String     @db.VarChar(150)
+  dataType     String     @db.VarChar(100)
+  nature       DataNature
+
+  @@index([connectionId])
 }

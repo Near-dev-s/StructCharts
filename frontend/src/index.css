@@ -19,7 +19,8 @@ body {
   color: #e03131;
 }
 
-.new-project-form {
+.new-project-form,
+.add-data-item-form {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
@@ -124,4 +125,18 @@ button.danger {
 .panel-actions {
   display: flex;
   gap: 8px;
+}
+
+.data-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.data-items-table th,
+.data-items-table td {
+  border: 1px solid #eee;
+  padding: 6px;
+  text-align: left;
 }

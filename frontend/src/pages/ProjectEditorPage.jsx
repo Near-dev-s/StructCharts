@@ -8,7 +8,15 @@ import ConnectionEditPanel from "../components/panels/ConnectionEditPanel";
 import { useProjectData } from "../hooks/useProjectData";
 import { getProject } from "../api/projects";
 import { createModule, updateModule, updateModulePosition, deleteModule, listModules } from "../api/modules";
-import { createConnection, updateConnection, deleteConnection, listConnections } from "../api/connections";
+import {
+  createConnection,
+  updateConnection,
+  deleteConnection,
+  listConnections,
+  addDataItem,
+  updateDataItem,
+  deleteDataItem,
+} from "../api/connections";
 import { computeHierarchicalPositions } from "../utils/hierarchicalLayout";
 
 export default function ProjectEditorPage() {
@@ -195,6 +203,18 @@ export default function ProjectEditorPage() {
             onDeleteConnection={async (connId) => {
               await deleteConnection(connId);
               setSelectedConnectionId(null);
+              reload();
+            }}
+            onAddDataItem={async (connId, data) => {
+              await addDataItem(connId, data);
+              reload();
+            }}
+            onUpdateDataItem={async (itemId, data) => {
+              await updateDataItem(itemId, data);
+              reload();
+            }}
+            onDeleteDataItem={async (itemId) => {
+              await deleteDataItem(itemId);
               reload();
             }}
             onClose={() => setSelectedConnectionId(null)}
