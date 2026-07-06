@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const EMPTY_ITEM = { name: "", dataType: "", nature: "ELEMENTARY" };
 
 const NATURE_OPTIONS = [
   { value: "ELEMENTARY", label: "Dato elemental" },
@@ -15,7 +17,13 @@ export default function ConnectionEditPanel({
   onDeleteDataItem,
   onClose,
 }) {
-  const [newItem, setNewItem] = useState({ name: "", dataType: "", nature: "ELEMENTARY" });
+  const [newItem, setNewItem] = useState(EMPTY_ITEM);
+
+  // Evita que texto sin enviar de la conexión anterior quede en el
+  // formulario al seleccionar una conexión distinta.
+  useEffect(() => {
+    setNewItem(EMPTY_ITEM);
+  }, [connection?.id]);
 
   if (!connection) return null;
 
@@ -23,7 +31,7 @@ export default function ConnectionEditPanel({
     e.preventDefault();
     if (!newItem.name.trim()) return;
     onAddDataItem(connection.id, newItem);
-    setNewItem({ name: "", dataType: "", nature: "ELEMENTARY" });
+    setNewItem(EMPTY_ITEM);
   }
 
   return (
