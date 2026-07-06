@@ -22,8 +22,15 @@ body {
 .new-project-form,
 .add-data-item-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
+}
+
+.add-data-item-form input,
+.add-data-item-form select {
+  flex: 1 1 100px;
+  min-width: 0;
 }
 
 .project-list {
@@ -87,9 +94,11 @@ button.danger {
 
 .panel {
   width: 340px;
+  flex-shrink: 0;
   padding: 16px;
   border-left: 1px solid #eee;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #fff;
 }
 
@@ -129,6 +138,7 @@ button.danger {
 
 .data-items-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   margin: 8px 0;
   font-size: 13px;
@@ -139,6 +149,18 @@ button.danger {
   border: 1px solid #eee;
   padding: 6px;
   text-align: left;
+  overflow: hidden;
+}
+
+.data-items-table input,
+.data-items-table select {
+  width: 100%;
+  min-width: 0;
+}
+
+.data-items-table td:last-child {
+  width: 28px;
+  padding: 4px;
 }
 
 .coupling-badge {
