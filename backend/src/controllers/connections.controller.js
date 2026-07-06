@@ -1,11 +1,22 @@
 const prisma = require("../lib/prisma");
+const { classifyCoupling, couplingLabel, isUndesirableCoupling } = require("../lib/coupling");
+
+function withCoupling(connection) {
+  const couplingType = classifyCoupling(connection.dataItems);
+  return {
+    ...connection,
+    couplingType,
+    couplingLabel: couplingLabel(couplingType),
+    isUndesirableCoupling: isUndesirableCoupling(couplingType),
+  };
+}
 
 async function listConnections(req, res) {
   const connections = await prisma.connection.findMany({
     where: { fromModule: { projectId: Number(req.params.projectId) } },
     include: { fromModule: true, toModule: true, dataItems: true },
   });
-  res.json(connections);
+  res.json(connections.map(withCoupling));
 }
 
 async function createConnection(req, res) {
@@ -22,7 +33,7 @@ async function createConnection(req, res) {
     },
     include: { fromModule: true, toModule: true, dataItems: true },
   });
-  res.status(201).json(connection);
+  res.status(201).json(withCoupling(connection));
 }
 
 async function updateConnection(req, res) {
@@ -32,7 +43,7 @@ async function updateConnection(req, res) {
     data: { relationType },
     include: { fromModule: true, toModule: true, dataItems: true },
   });
-  res.json(connection);
+  res.json(withCoupling(connection));
 }
 
 async function deleteConnection(req, res) {

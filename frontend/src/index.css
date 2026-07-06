@@ -140,3 +140,27 @@ button.danger {
   padding: 6px;
   text-align: left;
 }
+
+.coupling-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 4px 0 0;
+}
+
+.coupling-data {
+  background: #e6f7ec;
+  color: #2f9e44;
+}
+
+.coupling-stamp {
+  background: #fff3bf;
+  color: #9c6f00;
+}
+
+.coupling-control {
+  background: #ffe3e3;
+  color: #c92a2a;
+}

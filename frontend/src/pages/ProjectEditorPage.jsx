@@ -75,12 +75,17 @@ export default function ProjectEditorPage() {
 
   useEffect(() => {
     setEdges(
-      connections.map((c) => ({
-        id: String(c.id),
-        source: String(c.fromModuleId),
-        target: String(c.toModuleId),
-        label: c.relationType === "INVOCATION" ? "invocación" : "llamada",
-      }))
+      connections.map((c) => {
+        const relationLabel = c.relationType === "INVOCATION" ? "invocación" : "llamada";
+        return {
+          id: String(c.id),
+          source: String(c.fromModuleId),
+          target: String(c.toModuleId),
+          label: c.couplingLabel ? `${relationLabel} · ${c.couplingLabel}` : relationLabel,
+          style: c.isUndesirableCoupling ? { stroke: "#e03131" } : undefined,
+          labelStyle: c.isUndesirableCoupling ? { fill: "#e03131", fontWeight: 600 } : undefined,
+        };
+      })
     );
   }, [connections, setEdges]);
 

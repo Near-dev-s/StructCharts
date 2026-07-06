@@ -54,6 +54,13 @@ export default function ConnectionEditPanel({
         </select>
       </label>
 
+      {connection.couplingType && (
+        <p className={`coupling-badge coupling-${connection.couplingType.toLowerCase()}`}>
+          {connection.couplingLabel}
+          {connection.isUndesirableCoupling && " ⚠ no deseable"}
+        </p>
+      )}
+
       <h4>Datos intercambiados</h4>
       <table className="data-items-table">
         <thead>
