@@ -8,7 +8,7 @@ const NODE_HEIGHT = 70;
 export function computeHierarchicalPositions(modules, connections) {
   const graph = new dagre.graphlib.Graph();
   graph.setDefaultEdgeLabel(() => ({}));
-  graph.setGraph({ rankdir: "TB", nodesep: 60, ranksep: 90 });
+  graph.setGraph({ rankdir: "TB", nodesep: 110, ranksep: 130 });
 
   for (const module of modules) {
     graph.setNode(String(module.id), { width: NODE_WIDTH, height: NODE_HEIGHT });

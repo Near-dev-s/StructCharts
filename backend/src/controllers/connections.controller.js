@@ -1,5 +1,5 @@
 const prisma = require("../lib/prisma");
-const { classifyCoupling, couplingLabel, isUndesirableCoupling } = require("../lib/coupling");
+const { classifyCoupling, couplingLabel, couplingShortLabel, isUndesirableCoupling } = require("../lib/coupling");
 
 function withCoupling(connection) {
   const couplingType = classifyCoupling(connection.dataItems);
@@ -7,6 +7,7 @@ function withCoupling(connection) {
     ...connection,
     couplingType,
     couplingLabel: couplingLabel(couplingType),
+    couplingShortLabel: couplingShortLabel(couplingType),
     isUndesirableCoupling: isUndesirableCoupling(couplingType),
   };
 }

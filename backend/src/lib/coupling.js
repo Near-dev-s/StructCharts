@@ -7,6 +7,14 @@ const COUPLING_LABELS = {
   DATA: "Acoplamiento de datos",
 };
 
+// Versión corta para espacios reducidos, como la etiqueta de una conexión
+// en el diagrama (el detalle completo se ve en el panel lateral).
+const COUPLING_SHORT_LABELS = {
+  CONTROL: "Control",
+  STAMP: "Sello",
+  DATA: "Datos",
+};
+
 const UNDESIRABLE_COUPLINGS = new Set(["CONTROL", "STAMP"]);
 
 function classifyCoupling(dataItems) {
@@ -21,8 +29,12 @@ function couplingLabel(couplingType) {
   return couplingType ? COUPLING_LABELS[couplingType] : null;
 }
 
+function couplingShortLabel(couplingType) {
+  return couplingType ? COUPLING_SHORT_LABELS[couplingType] : null;
+}
+
 function isUndesirableCoupling(couplingType) {
   return UNDESIRABLE_COUPLINGS.has(couplingType);
 }
 
-module.exports = { classifyCoupling, couplingLabel, isUndesirableCoupling };
+module.exports = { classifyCoupling, couplingLabel, couplingShortLabel, isUndesirableCoupling };

@@ -31,9 +31,40 @@ export default function ProjectEditorPage() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [panelWidth, setPanelWidth] = useState(340);
 
   const diagramRef = useRef(null);
   const autoLayoutAppliedRef = useRef(false);
+  const resizingPanelRef = useRef(false);
+
+  // Arrastre del borde izquierdo del panel para agrandarlo/achicarlo; se
+  // registra una sola vez y se activa/desactiva con la bandera del ref para
+  // no crear/destruir listeners en cada mousedown.
+  useEffect(() => {
+    function handleMouseMove(e) {
+      if (!resizingPanelRef.current) return;
+      const newWidth = window.innerWidth - e.clientX;
+      setPanelWidth(Math.min(Math.max(newWidth, 300), 800));
+    }
+    function handleMouseUp() {
+      resizingPanelRef.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
+
+  function handlePanelResizeStart(e) {
+    e.preventDefault();
+    resizingPanelRef.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }
 
   useEffect(() => {
     getProject(id).then(setProject);
@@ -74,18 +105,19 @@ export default function ProjectEditorPage() {
   }, [modules, setNodes]);
 
   useEffect(() => {
+    // Etiqueta corta en el diagrama (el detalle completo — tipo de relación,
+    // datos intercambiados — se ve en el panel al hacer clic en la conexión);
+    // así el texto no se superpone cuando varias conexiones convergen en un
+    // mismo nodo.
     setEdges(
-      connections.map((c) => {
-        const relationLabel = c.relationType === "INVOCATION" ? "invocación" : "llamada";
-        return {
-          id: String(c.id),
-          source: String(c.fromModuleId),
-          target: String(c.toModuleId),
-          label: c.couplingLabel ? `${relationLabel} · ${c.couplingLabel}` : relationLabel,
-          style: c.isUndesirableCoupling ? { stroke: "#e03131" } : undefined,
-          labelStyle: c.isUndesirableCoupling ? { fill: "#e03131", fontWeight: 600 } : undefined,
-        };
-      })
+      connections.map((c) => ({
+        id: String(c.id),
+        source: String(c.fromModuleId),
+        target: String(c.toModuleId),
+        label: c.couplingShortLabel || undefined,
+        style: c.isUndesirableCoupling ? { stroke: "#e03131" } : undefined,
+        labelStyle: c.isUndesirableCoupling ? { fill: "#e03131", fontWeight: 600 } : undefined,
+      }))
     );
   }, [connections, setEdges]);
 
@@ -186,44 +218,50 @@ export default function ProjectEditorPage() {
           onEdgeClick={handleEdgeClick}
         />
 
-        {(selectedModule || creatingModule) && (
-          <ModuleEditPanel
-            module={selectedModule}
-            onSave={handleSaveModule}
-            onDelete={handleDeleteModule}
-            onClose={() => {
-              setSelectedModuleId(null);
-              setCreatingModule(false);
-            }}
-          />
-        )}
+        {(selectedModule || creatingModule || selectedConnection) && (
+          <div className="panel-container" style={{ width: panelWidth }}>
+            <div className="panel-resize-handle" onMouseDown={handlePanelResizeStart} />
 
-        {selectedConnection && (
-          <ConnectionEditPanel
-            connection={selectedConnection}
-            onUpdateConnection={async (connId, data) => {
-              await updateConnection(connId, data);
-              reload();
-            }}
-            onDeleteConnection={async (connId) => {
-              await deleteConnection(connId);
-              setSelectedConnectionId(null);
-              reload();
-            }}
-            onAddDataItem={async (connId, data) => {
-              await addDataItem(connId, data);
-              reload();
-            }}
-            onUpdateDataItem={async (itemId, data) => {
-              await updateDataItem(itemId, data);
-              reload();
-            }}
-            onDeleteDataItem={async (itemId) => {
-              await deleteDataItem(itemId);
-              reload();
-            }}
-            onClose={() => setSelectedConnectionId(null)}
-          />
+            {(selectedModule || creatingModule) && (
+              <ModuleEditPanel
+                module={selectedModule}
+                onSave={handleSaveModule}
+                onDelete={handleDeleteModule}
+                onClose={() => {
+                  setSelectedModuleId(null);
+                  setCreatingModule(false);
+                }}
+              />
+            )}
+
+            {selectedConnection && (
+              <ConnectionEditPanel
+                connection={selectedConnection}
+                onUpdateConnection={async (connId, data) => {
+                  await updateConnection(connId, data);
+                  reload();
+                }}
+                onDeleteConnection={async (connId) => {
+                  await deleteConnection(connId);
+                  setSelectedConnectionId(null);
+                  reload();
+                }}
+                onAddDataItem={async (connId, data) => {
+                  await addDataItem(connId, data);
+                  reload();
+                }}
+                onUpdateDataItem={async (itemId, data) => {
+                  await updateDataItem(itemId, data);
+                  reload();
+                }}
+                onDeleteDataItem={async (itemId) => {
+                  await deleteDataItem(itemId);
+                  reload();
+                }}
+                onClose={() => setSelectedConnectionId(null)}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>
