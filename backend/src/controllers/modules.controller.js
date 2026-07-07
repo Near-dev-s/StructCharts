@@ -1,10 +1,31 @@
 const prisma = require("../lib/prisma");
+const { classifyCoupling, isUndesirableCoupling } = require("../lib/coupling");
+
+const CONNECTIONS_INCLUDE = {
+  connectionsFrom: { include: { dataItems: true } },
+  connectionsTo: { include: { dataItems: true } },
+};
+
+// Adjunta dos métricas derivadas del árbol al módulo:
+// - fanOut (requisito 8): cuántos módulos llama directamente (sus conexiones salientes).
+// - hasUndesirableCoupling (requisito 7): si alguna conexión que lo toca (entrante
+//   o saliente) quedó clasificada como acoplamiento de sello o de control.
+function withModuleMetrics(module_) {
+  const outgoing = module_.connectionsFrom || [];
+  const incoming = module_.connectionsTo || [];
+  const hasUndesirableCoupling = [...outgoing, ...incoming].some((c) =>
+    isUndesirableCoupling(classifyCoupling(c.dataItems))
+  );
+  const { connectionsFrom, connectionsTo, ...rest } = module_;
+  return { ...rest, fanOut: outgoing.length, hasUndesirableCoupling };
+}
 
 async function listModules(req, res) {
   const modules = await prisma.module.findMany({
     where: { projectId: Number(req.params.projectId) },
+    include: CONNECTIONS_INCLUDE,
   });
-  res.json(modules);
+  res.json(modules.map(withModuleMetrics));
 }
 
 async function createModule(req, res) {
@@ -21,7 +42,8 @@ async function createModule(req, res) {
       posY: posY ?? 0,
     },
   });
-  res.status(201).json(module_);
+  // Un módulo recién creado todavía no tiene conexiones.
+  res.status(201).json({ ...module_, fanOut: 0, hasUndesirableCoupling: false });
 }
 
 async function updateModule(req, res) {
@@ -29,8 +51,9 @@ async function updateModule(req, res) {
   const module_ = await prisma.module.update({
     where: { id: Number(req.params.id) },
     data: { name, type, description },
+    include: CONNECTIONS_INCLUDE,
   });
-  res.json(module_);
+  res.json(withModuleMetrics(module_));
 }
 
 async function updateModulePosition(req, res) {
@@ -38,8 +61,9 @@ async function updateModulePosition(req, res) {
   const module_ = await prisma.module.update({
     where: { id: Number(req.params.id) },
     data: { posX, posY },
+    include: CONNECTIONS_INCLUDE,
   });
-  res.json(module_);
+  res.json(withModuleMetrics(module_));
 }
 
 async function deleteModule(req, res) {

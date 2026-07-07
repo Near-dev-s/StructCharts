@@ -25,6 +25,16 @@ export default function ModuleEditPanel({ module, onSave, onDelete, onClose }) {
         <h3>{module ? "Editar módulo" : "Nuevo módulo"}</h3>
         <button type="button" onClick={onClose}>✕</button>
       </div>
+
+      {module && (
+        <p className="module-metrics">
+          Amplitud de control (fan-out): <strong>{module.fanOut ?? 0}</strong>
+          {module.hasUndesirableCoupling && (
+            <span className="coupling-badge coupling-control"> ⚠ acoplamiento no deseable</span>
+          )}
+        </p>
+      )}
+
       <form onSubmit={handleSubmit}>
         <label>
           Nombre

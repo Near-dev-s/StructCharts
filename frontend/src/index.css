@@ -123,6 +123,12 @@ button.danger {
   box-sizing: border-box;
 }
 
+.module-metrics {
+  font-size: 13px;
+  color: #444;
+  margin: 0 0 12px;
+}
+
 .panel-header {
   display: flex;
   justify-content: space-between;

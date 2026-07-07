@@ -94,6 +94,8 @@ export default function ProjectEditorPage() {
           moduleId: m.id,
           name: m.name,
           type: m.type,
+          fanOut: m.fanOut,
+          hasUndesirableCoupling: m.hasUndesirableCoupling,
           onSelect: (moduleId) => {
             setSelectedModuleId(moduleId);
             setSelectedConnectionId(null);
