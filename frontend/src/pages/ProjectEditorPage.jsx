@@ -122,6 +122,13 @@ export default function ProjectEditorPage() {
         label: c.couplingShortLabel || undefined,
         style: c.isUndesirableCoupling ? { stroke: "#e03131" } : undefined,
         labelStyle: c.isUndesirableCoupling ? { fill: "#e03131", fontWeight: 600 } : undefined,
+        // Fondo de la etiqueta fijado explícitamente (no solo por la hoja de
+        // estilos de reactflow): html-to-image no siempre captura bien el
+        // fill de un <rect> SVG que viene de una clase externa, y sin esto
+        // la etiqueta exportada aparece con fondo negro por defecto de SVG.
+        labelBgStyle: { fill: "#ffffff", fillOpacity: 0.9 },
+        labelBgPadding: [4, 2],
+        labelBgBorderRadius: 3,
       }))
     );
   }, [connections, setEdges]);
