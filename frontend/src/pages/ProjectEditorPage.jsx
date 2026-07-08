@@ -5,6 +5,7 @@ import DiagramCanvas from "../components/diagram/DiagramCanvas";
 import Toolbar from "../components/shared/Toolbar";
 import ModuleEditPanel from "../components/panels/ModuleEditPanel";
 import ConnectionEditPanel from "../components/panels/ConnectionEditPanel";
+import QualityReportPanel from "../components/panels/QualityReportPanel";
 import { useProjectData } from "../hooks/useProjectData";
 import { getProject } from "../api/projects";
 import { createModule, updateModule, updateModulePosition, deleteModule, listModules } from "../api/modules";
@@ -28,6 +29,7 @@ export default function ProjectEditorPage() {
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
   const [creatingModule, setCreatingModule] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -205,7 +207,10 @@ export default function ProjectEditorPage() {
           setSelectedConnectionId(null);
         }}
         onAutoLayout={handleAutoLayout}
+        onShowReport={() => setShowReport(true)}
       />
+
+      {showReport && <QualityReportPanel projectId={id} onClose={() => setShowReport(false)} />}
 
       <div className="editor-body">
         <DiagramCanvas
