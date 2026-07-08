@@ -29,7 +29,7 @@ export default function QualityReportPanel({ projectId, onClose }) {
               <button
                 type="button"
                 onClick={() => {
-                  const fileName = `${report.project.name.replace(/[^\w\-]+/g, "_")}_reporte.txt`;
+                  const fileName = `${report.project.name.replace(/[^\p{L}\p{N}-]+/gu, "_")}_reporte.txt`;
                   downloadTextFile(buildReportText(report), fileName);
                 }}
               >

@@ -188,7 +188,7 @@ export default function ProjectEditorPage() {
   }
 
   async function handleExportImage() {
-    const fileName = `${(project?.name || "structchart").replace(/[^\w\-]+/g, "_")}.png`;
+    const fileName = `${(project?.name || "structchart").replace(/[^\p{L}\p{N}-]+/gu, "_")}.png`;
     try {
       await exportDiagramAsImage(diagramRef.current, nodes, fileName);
     } catch (err) {

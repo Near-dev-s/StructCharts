@@ -18,11 +18,11 @@ export async function exportDiagramAsImage(containerEl, nodes, fileName) {
 
   const dataUrl = await toPng(viewportEl, {
     backgroundColor: "#fafafa",
+    // width/height ya quedan aplicados (con "px") por html-to-image a partir
+    // de estas mismas opciones; acá solo hace falta el transform para encuadrar.
     width: IMAGE_WIDTH,
     height: IMAGE_HEIGHT,
     style: {
-      width: String(IMAGE_WIDTH),
-      height: String(IMAGE_HEIGHT),
       transform: `translate(${x}px, ${y}px) scale(${zoom})`,
     },
   });
