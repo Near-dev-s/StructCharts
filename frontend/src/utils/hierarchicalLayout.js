@@ -1,7 +1,10 @@
 import dagre from "dagre";
 
 const NODE_WIDTH = 180;
-const NODE_HEIGHT = 70;
+// ModuleNode ahora renderiza nombre + tipo + "Fan-out: N" (requisito 8), así
+// que necesita más alto que las dos líneas originales para que dagre calcule
+// bien el espaciado entre filas del árbol.
+const NODE_HEIGHT = 86;
 
 // Calcula posiciones en árbol jerárquico top-down (raíz arriba, subordinados
 // por nivel debajo) a partir de los módulos y sus conexiones de llamada.
