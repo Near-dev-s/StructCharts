@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getQualityReport } from "../../api/reports";
+import { buildReportText, downloadTextFile } from "../../utils/exportReportText";
 
 const COUPLING_ROW_LABELS = {
   DATA: "Acoplamiento de datos",
@@ -23,7 +24,20 @@ export default function QualityReportPanel({ projectId, onClose }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="panel-header">
           <h3>Reporte de calidad del diseño</h3>
-          <button type="button" onClick={onClose}>✕</button>
+          <div className="panel-actions">
+            {report && (
+              <button
+                type="button"
+                onClick={() => {
+                  const fileName = `${report.project.name.replace(/[^\w\-]+/g, "_")}_reporte.txt`;
+                  downloadTextFile(buildReportText(report), fileName);
+                }}
+              >
+                Exportar texto
+              </button>
+            )}
+            <button type="button" onClick={onClose}>✕</button>
+          </div>
         </div>
 
         {error && <p className="error">{error}</p>}

@@ -19,6 +19,7 @@ import {
   deleteDataItem,
 } from "../api/connections";
 import { computeHierarchicalPositions } from "../utils/hierarchicalLayout";
+import { exportDiagramAsImage } from "../utils/exportDiagramImage";
 
 export default function ProjectEditorPage() {
   const { projectId } = useParams();
@@ -186,6 +187,15 @@ export default function ProjectEditorPage() {
     reload();
   }
 
+  async function handleExportImage() {
+    const fileName = `${(project?.name || "structchart").replace(/[^\w\-]+/g, "_")}.png`;
+    try {
+      await exportDiagramAsImage(diagramRef.current, nodes, fileName);
+    } catch (err) {
+      window.alert(err.message);
+    }
+  }
+
   const selectedModule = modules.find((m) => m.id === selectedModuleId) || null;
   const selectedConnection = connections.find((c) => c.id === selectedConnectionId) || null;
 
@@ -208,6 +218,7 @@ export default function ProjectEditorPage() {
         }}
         onAutoLayout={handleAutoLayout}
         onShowReport={() => setShowReport(true)}
+        onExportImage={handleExportImage}
       />
 
       {showReport && <QualityReportPanel projectId={id} onClose={() => setShowReport(false)} />}
