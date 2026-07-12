@@ -343,34 +343,6 @@ button.danger {
   background: var(--color-danger-soft);
 }
 
-.icon-plus {
-  width: 14px;
-  height: 14px;
-  position: relative;
-}
-
-.icon-plus::before,
-.icon-plus::after {
-  content: "";
-  position: absolute;
-  background: currentColor;
-  border-radius: 1px;
-}
-
-.icon-plus::before {
-  width: 100%;
-  height: 2px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.icon-plus::after {
-  height: 100%;
-  width: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .editor-page {
   display: flex;
   flex-direction: column;

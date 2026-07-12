@@ -67,7 +67,28 @@ async function updateModulePosition(req, res) {
 }
 
 async function deleteModule(req, res) {
-  await prisma.module.delete({ where: { id: Number(req.params.id) } });
+  const moduleId = Number(req.params.id);
+
+  // Igual que en deleteProject: borramos primero, de forma explícita, las
+  // conexiones que tocan al módulo (y sus datos), en vez de depender del doble
+  // ON DELETE CASCADE de Connection hacia Module. Así el borrado es portable
+  // entre versiones de MySQL/MariaDB. Se usa delete() del módulo al final para
+  // conservar el 404 si el id no existe.
+  await prisma.$transaction(async (tx) => {
+    const connections = await tx.connection.findMany({
+      where: { OR: [{ fromModuleId: moduleId }, { toModuleId: moduleId }] },
+      select: { id: true },
+    });
+    const connectionIds = connections.map((c) => c.id);
+
+    if (connectionIds.length > 0) {
+      await tx.dataItem.deleteMany({ where: { connectionId: { in: connectionIds } } });
+      await tx.connection.deleteMany({ where: { id: { in: connectionIds } } });
+    }
+
+    await tx.module.delete({ where: { id: moduleId } });
+  });
+
   res.status(204).send();
 }
 

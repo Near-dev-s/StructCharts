@@ -36,7 +36,13 @@ export default function ProjectListPage() {
 
   async function handleDelete(id) {
     if (!window.confirm("¿Eliminar este proyecto? Esta acción no se puede deshacer.")) return;
-    await deleteProject(id);
+    try {
+      await deleteProject(id);
+    } catch (err) {
+      // Si el borrado falla, mostramos el error pero igual refrescamos la lista
+      // para que quede sincronizada con el backend (nunca queda en blanco).
+      setError(err.message);
+    }
     reload();
   }
 
@@ -47,8 +53,8 @@ export default function ProjectListPage() {
           <span className="home-badge">StructChart</span>
           <h1>Diseño Estructurado &amp; Cartas de Estructura</h1>
           <p>
-            Construí cartas de estructura de forma visual, identificá el tipo de acoplamiento entre
-            módulos y evaluá la calidad del diseño jerárquico de tu sistema.
+            Construye cartas de estructura de forma visual, identifica el tipo de acoplamiento entre
+            módulos y evalua la calidad del diseño jerárquico de tu sistema.
           </p>
         </div>
       </header>
@@ -79,7 +85,6 @@ export default function ProjectListPage() {
               />
             </div>
             <button type="submit" className="btn btn-primary">
-              <span className="icon-plus" aria-hidden="true" />
               Crear proyecto
             </button>
           </form>
