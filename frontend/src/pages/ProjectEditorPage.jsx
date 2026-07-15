@@ -120,7 +120,12 @@ export default function ProjectEditorPage() {
         source: String(c.fromModuleId),
         target: String(c.toModuleId),
         label: c.couplingShortLabel || undefined,
-        style: c.isUndesirableCoupling ? { stroke: "#e03131" } : undefined,
+        // El stroke se fija SIEMPRE de forma explícita, no solo para las
+        // conexiones no deseables. El color por defecto de reactflow (#b1b1b7)
+        // vive en su hoja de estilos externa, y html-to-image no lo captura al
+        // exportar: sin esto, las conexiones de acoplamiento de datos salían
+        // sin trazo (invisibles) en el PNG. Mismo motivo que labelBgStyle abajo.
+        style: { stroke: c.isUndesirableCoupling ? "#e03131" : "#b1b1b7" },
         labelStyle: c.isUndesirableCoupling ? { fill: "#e03131", fontWeight: 600 } : undefined,
         // Fondo de la etiqueta fijado explícitamente (no solo por la hoja de
         // estilos de reactflow): html-to-image no siempre captura bien el
